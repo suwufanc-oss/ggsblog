@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsmediatags/dist/jsmediatags.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 tailwind.config = { theme: { extend: { clipPath: {
     'card-cut': 'polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))',
@@ -60,31 +61,20 @@ tailwind.config = { theme: { extend: { clipPath: {
     --reader-font-size: 15px;
     --reader-font: 'Noto Sans SC', system-ui, sans-serif;
 }
-/* 主题切换过渡 */
-body, header, aside, main, .ark-card-item, .lg-panel,
-input, select, button, textarea, .rich-content,
-.rich-content pre, .rich-content code, .toc-link {
+body, header, aside, main, .ark-card-item, .lg-panel, input, select, button, textarea, .rich-content, .rich-content pre, .rich-content code, .toc-link {
     transition-property: background-color, color, border-color, box-shadow;
     transition-duration: 0.35s;
     transition-timing-function: ease;
 }
 @media (prefers-reduced-motion: reduce) {
-    body, header, aside, main, .ark-card-item, .lg-panel,
-    input, select, button, textarea, .rich-content,
-    .rich-content pre, .rich-content code, .toc-link {
+    body, header, aside, main, .ark-card-item, .lg-panel, input, select, button, textarea, .rich-content, .rich-content pre, .rich-content code, .toc-link {
         transition-property: none !important;
         transition-duration: 0s !important;
     }
 }
 :root.light-mode {
-    --ark-dark: #eef2f7;
-    --ark-panel: #ffffff;
-    --ark-border: #d4dbe5;
-    --ark-text: #1c2433;
-    --ark-sub: #67717f;
-    --ark-overlay: rgba(232,238,245,0.55);
-    --ark-shadow: rgba(80,100,130,0.16);
-    --ark-code-bg: rgba(30,40,60,0.06);
+    --ark-dark: #eef2f7; --ark-panel: #ffffff; --ark-border: #d4dbe5; --ark-text: #1c2433; --ark-sub: #67717f;
+    --ark-overlay: rgba(232,238,245,0.55); --ark-shadow: rgba(80,100,130,0.16); --ark-code-bg: rgba(30,40,60,0.06);
     --ark-highlight-50: rgba(52, 195, 255, 0.4);
 }
 body { background: var(--ark-dark); background-image: var(--bg-gradient); }
@@ -103,15 +93,8 @@ body { background: var(--ark-dark); background-image: var(--bg-gradient); }
 @keyframes lg-glow-breathe { 0%,100% { opacity:.35; transform: scale(1);} 50% { opacity:.7; transform: scale(1.08);} }
 @keyframes lg-belt-slide { 0% { transform: translate3d(-30%,0,0) rotate(-18deg); opacity:0;} 15% { opacity:.4;} 85% { opacity:.4;} 100% { transform: translate3d(30%,0,0) rotate(-18deg); opacity:0;} }
 @keyframes lg-kanji-fade { 0%,100% { opacity:.06;} 50% { opacity:.16;} }
-.lg-bg { position:absolute; inset:0; overflow:hidden; pointer-events:none;
-    background: radial-gradient(ellipse at 20% 10%, rgba(52,195,255,.10) 0%, transparent 55%),
-                radial-gradient(ellipse at 80% 90%, rgba(169,123,255,.10) 0%, transparent 55%),
-                radial-gradient(ellipse at 50% 50%, rgba(255,204,68,.05) 0%, transparent 60%),
-                linear-gradient(180deg,#050810 0%,#0a0f1c 50%,#06080f 100%); }
-.lg-city { position:absolute; left:0; right:0; bottom:0; height:34%;
-    background: linear-gradient(to top, rgba(6,9,16,.95) 0%, rgba(6,9,16,.4) 60%, transparent 100%),
-                repeating-linear-gradient(90deg, transparent 0px, transparent 22px, rgba(52,195,255,.05) 22px, rgba(52,195,255,.05) 24px, transparent 24px, transparent 60px, rgba(255,204,68,.03) 60px, rgba(255,204,68,.03) 62px, transparent 62px, transparent 96px, rgba(169,123,255,.04) 96px, rgba(169,123,255,.04) 98px, transparent 98px, transparent 140px);
-    -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%); mask-image: linear-gradient(to top, black 0%, transparent 100%); pointer-events:none; }
+.lg-bg { position:absolute; inset:0; overflow:hidden; pointer-events:none; background: radial-gradient(ellipse at 20% 10%, rgba(52,195,255,.10) 0%, transparent 55%), radial-gradient(ellipse at 80% 90%, rgba(169,123,255,.10) 0%, transparent 55%), radial-gradient(ellipse at 50% 50%, rgba(255,204,68,.05) 0%, transparent 60%), linear-gradient(180deg,#050810 0%,#0a0f1c 50%,#06080f 100%); }
+.lg-city { position:absolute; left:0; right:0; bottom:0; height:34%; background: linear-gradient(to top, rgba(6,9,16,.95) 0%, rgba(6,9,16,.4) 60%, transparent 100%), repeating-linear-gradient(90deg, transparent 0px, transparent 22px, rgba(52,195,255,.05) 22px, rgba(52,195,255,.05) 24px, transparent 24px, transparent 60px, rgba(255,204,68,.03) 60px, rgba(255,204,68,.03) 62px, transparent 62px, transparent 96px, rgba(169,123,255,.04) 96px, rgba(169,123,255,.04) 98px, transparent 98px, transparent 140px); -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%); mask-image: linear-gradient(to top, black 0%, transparent 100%); pointer-events:none; }
 .lg-belt { position:absolute; left:-20%; right:-20%; height:120px; background: linear-gradient(90deg, transparent, rgba(52,195,255,.12), rgba(169,123,255,.08), transparent); filter: blur(28px); animation: lg-belt-slide 14s ease-in-out infinite; pointer-events:none; }
 .lg-belt-1 { top:22%; } .lg-belt-2 { top:68%; animation-delay:7s; background: linear-gradient(90deg, transparent, rgba(255,204,68,.10), rgba(52,195,255,.06), transparent); }
 .lg-glow { position:absolute; width:500px; height:500px; border-radius:50%; pointer-events:none; animation: lg-glow-breathe 8s ease-in-out infinite; filter: blur(60px); }
@@ -323,13 +306,21 @@ body { background: var(--ark-dark); background-image: var(--bg-gradient); }
             <div id="loginForm" class="space-y-5">
                 <div>
                     <div class="flex items-center justify-between mb-2 text-[10px] font-mono tracking-widest">
-                        <span style="color:#8792a6b3;">// ACCESS CODE</span>
+                        <span style="color:#8792a6b3;">// EMAIL</span>
                         <span style="color:#34c3ff99;">REQUIRED</span>
                     </div>
-                    <input type="password" id="passwordInput" class="lg-input" placeholder="输入访问密钥" autocomplete="off" spellcheck="false" autocapitalize="off" />
+                    <input type="email" id="emailInput" class="lg-input" placeholder="输入邮箱" autocomplete="off" spellcheck="false" />
                 </div>
-                <div id="loginError" class="text-red-400 text-xs font-mono hidden text-center tracking-wider">[ ERR ] 密钥校验失败</div>
+                <div>
+                    <div class="flex items-center justify-between mb-2 text-[10px] font-mono tracking-widest">
+                        <span style="color:#8792a6b3;">// PASSWORD</span>
+                        <span style="color:#34c3ff99;">REQUIRED</span>
+                    </div>
+                    <input type="password" id="passwordInput" class="lg-input" placeholder="输入密码" autocomplete="off" spellcheck="false" />
+                </div>
+                <div id="loginError" class="text-red-400 text-xs font-mono hidden text-center tracking-wider">[ ERR ] 校验失败</div>
                 <button onclick="verifyLogin()" class="lg-btn">验 证 接 入</button>
+                <button onclick="signUp()" class="lg-btn" style="margin-top:10px; border-color:#8792a6; color:#8792a6;">注 册 新 账 号</button>
             </div>
 
             <div id="loginLoading" class="hidden font-mono text-xs space-y-2 py-2" style="color:#34c3ff;">
@@ -356,11 +347,18 @@ body { background: var(--ark-dark); background-image: var(--bg-gradient); }
             <nav class="flex gap-1 md:gap-2">
                 <button onclick="switchPage('home')" class="nav-btn px-3 md:px-5 py-2 text-sm md:text-base hover:text-[var(--ark-highlight)] transition-colors btn-cut-active" data-page="home">档案</button>
                 <button onclick="switchPage('music')" class="nav-btn px-3 md:px-5 py-2 text-sm md:text-base hover:text-[var(--ark-highlight)] transition-colors btn-cut-active" data-page="music">音乐</button>
+                <button onclick="switchPage('chat')" class="nav-btn px-3 md:px-5 py-2 text-sm md:text-base hover:text-[var(--ark-highlight)] transition-colors btn-cut-active" data-page="chat">聊天</button>
                 <button onclick="switchPage('editor')" class="nav-btn px-3 md:px-5 py-2 text-sm md:text-base hover:text-[var(--ark-highlight)] transition-colors admin-only hidden btn-cut-active" data-page="editor">编辑</button>
                 <button onclick="switchPage('settings')" class="nav-btn px-3 md:px-5 py-2 text-sm md:text-base hover:text-[var(--ark-highlight)] transition-colors btn-cut-active" data-page="settings">设置</button>
             </nav>
         </div>
         <div class="flex items-center gap-2 md:gap-4">
+            <!-- 用户资料显示区 -->
+            <div id="userProfileDisplay" class="flex items-center gap-2 mr-2 hidden">
+                <img id="topUserAvatar" src="" class="w-8 h-8 rounded-full border border-[var(--ark-highlight)] object-cover" />
+                <span id="topUserNickname" class="text-sm font-medium text-[var(--ark-text)] max-w-[80px] truncate">用户</span>
+            </div>
+
             <div id="topClock" class="text-right font-mono mr-1 hidden sm:flex">
                 <div id="topDate" class="text-[11px] text-[var(--ark-sub)] leading-tight">--</div>
                 <div class="flex items-center gap-2">
@@ -474,6 +472,23 @@ body { background: var(--ark-dark); background-image: var(--bg-gradient); }
                 <div id="tocList" class="space-y-0.5"></div>
             </aside>
             <button id="backToTop" onclick="scrollDetailTop()" class="hidden fixed bottom-6 right-6 w-11 h-11 rounded-full bg-[var(--ark-panel)]/90 backdrop-blur border border-[var(--ark-border)] hover:border-[var(--ark-highlight)] hover:text-[var(--ark-highlight)] transition-all btn-cut-active z-30">↑</button>
+        </div>
+
+        <!-- 聊天室页 -->
+        <div id="page-chat" class="page h-full flex flex-col p-4 md:p-6">
+            <div class="max-w-3xl mx-auto w-full flex-1 flex flex-col bg-[var(--ark-panel)]/85 backdrop-blur card-shadow clip-path-panel-cut overflow-hidden">
+                <div class="p-4 border-b border-[var(--ark-border)] flex justify-between items-center bg-[var(--ark-dark)]/50">
+                    <h2 class="font-medium">在线聊天室</h2>
+                    <span class="text-xs text-[var(--ark-sub)] font-mono" id="chatStatus">连接中...</span>
+                </div>
+                <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 thin-scroll">
+                    <div class="text-center text-[var(--ark-sub)] text-sm">暂无消息，来说两句吧！</div>
+                </div>
+                <div class="p-4 border-t border-[var(--ark-border)] flex gap-2">
+                    <input id="chatInput" placeholder="输入消息..." class="flex-1 bg-[var(--ark-dark)] border border-[var(--ark-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--ark-highlight)] clip-path-btn-cut" onkeydown="if(event.key==='Enter') sendMessage()" />
+                    <button onclick="sendMessage()" class="px-4 py-2 bg-[var(--ark-highlight)]/10 border border-[var(--ark-highlight)] text-[var(--ark-highlight)] text-sm clip-path-btn-cut hover:bg-[var(--ark-highlight)]/20 transition-colors btn-cut-active">发送</button>
+                </div>
+            </div>
         </div>
 
         <!-- 音乐页 -->
@@ -623,6 +638,26 @@ body { background: var(--ark-dark); background-image: var(--bg-gradient); }
         <div id="page-settings" class="page h-full overflow-y-auto p-4 md:p-6 thin-scroll">
             <div class="max-w-2xl mx-auto space-y-6">
                 <h2 class="text-xl mb-2 border-b border-[var(--ark-border)] pb-2">系统设置</h2>
+
+                <!-- 个人资料设置 -->
+                <div clip-path-panel-cut class="bg-[var(--ark-panel)]/85 backdrop-blur card-shadow p-6">
+                    <h3 class="text-base font-medium mb-4">个人资料设置</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-[var(--ark-sub)] mb-1">昵称</label>
+                            <input type="text" id="settingsNickname" class="w-full bg-[var(--ark-dark)] border border-[var(--ark-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--ark-highlight)] clip-path-btn-cut" />
+                        </div>
+                        <div>
+                            <label class="block text-sm text-[var(--ark-sub)] mb-1">头像</label>
+                            <div class="flex gap-2 items-center">
+                                <img id="settingsAvatarPreview" class="w-12 h-12 rounded-full border border-[var(--ark-border)] object-cover hidden" />
+                                <input type="file" id="avatarUpload" accept="image/*" class="hidden" onchange="uploadAvatar(this.files[0])" />
+                                <button onclick="document.getElementById('avatarUpload').click()" class="px-3 py-1.5 text-xs border border-[var(--ark-border)] hover:border-[var(--ark-highlight)] clip-path-btn-cut btn-cut-active">上传头像</button>
+                            </div>
+                        </div>
+                        <button onclick="saveProfile()" class="px-4 py-2 bg-[var(--ark-highlight)]/10 border border-[var(--ark-highlight)] text-[var(--ark-highlight)] text-sm clip-path-btn-cut hover:bg-[var(--ark-highlight)]/20 transition-colors btn-cut-active">保存资料</button>
+                    </div>
+                </div>
 
                 <div clip-path-panel-cut class="bg-[var(--ark-panel)]/85 backdrop-blur card-shadow p-6">
                     <h3 class="text-base font-medium mb-4">外观模式</h3>
@@ -848,7 +883,131 @@ body { background: var(--ark-dark); background-image: var(--bg-gradient); }
 
 <script>
 /* ============================================================
-   全局
+   Supabase 后端与用户系统
+============================================================ */
+const supabaseUrl = 'https://awjqyvqskaahotflzqiu.supabase.co';
+const supabaseKey = 'sb_publishable_Ep_8-ns5jYzAkebPFIe6hQ_eN7HJhkI';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+let currentUser = null;
+let chatSubscription = null;
+let userProfile = { nickname: '用户', avatar_url: '' };
+
+async function verifyLogin() {
+    const email = document.getElementById('emailInput').value.trim();
+    const password = document.getElementById('passwordInput').value;
+    const err = document.getElementById('loginError');
+    if (err) err.classList.add('hidden');
+    if (!email || !password) { if(err) {err.textContent='[ ERR ] 邮箱和密码不能为空'; err.classList.remove('hidden');} return; }
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+        if(err) {err.textContent='[ ERR ] ' + error.message; err.classList.remove('hidden');}
+        sfxWarn();
+    } else {
+        currentUser = data.user;
+        sfxSuccess();
+        startLoginAnim();
+    }
+}
+
+async function signUp() {
+    const email = document.getElementById('emailInput').value.trim();
+    const password = document.getElementById('passwordInput').value;
+    const err = document.getElementById('loginError');
+    if (err) err.classList.add('hidden');
+    if (!email || !password) { if(err) {err.textContent='[ ERR ] 请输入邮箱和密码'; err.classList.remove('hidden');} return; }
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+        if(err) {err.textContent='[ ERR ] ' + error.message; err.classList.remove('hidden');}
+        sfxWarn();
+    } else {
+        alert('注册成功！请直接点击“验证接入”登录。');
+    }
+}
+
+async function loadUserProfile() {
+    if (!currentUser) return;
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    if (data) {
+        userProfile = data;
+        document.getElementById('topUserAvatar').src = data.avatar_url || 'https://api.dicebear.com/7.x/identicon/svg?seed=' + currentUser.id;
+        document.getElementById('topUserNickname').textContent = data.nickname || '用户';
+        document.getElementById('userProfileDisplay').classList.remove('hidden');
+        document.getElementById('settingsNickname').value = data.nickname || '';
+        if (data.avatar_url) document.getElementById('settingsAvatarPreview').src = data.avatar_url;
+    }
+}
+
+async function saveProfile() {
+    const nickname = document.getElementById('settingsNickname').value.trim();
+    if (!nickname) return alert('昵称不能为空');
+    const { error } = await supabase.from('profiles').upsert({ id: currentUser.id, nickname: nickname, avatar_url: userProfile.avatar_url });
+    if (error) alert('保存失败：' + error.message);
+    else { alert('资料已保存'); loadUserProfile(); }
+}
+
+async function uploadAvatar(file) {
+    if (!file || !currentUser) return;
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${currentUser.id}_${Date.now()}.${fileExt}`;
+    const { data, error } = await supabase.storage.from('avatars').upload(fileName, file, { upsert: true });
+    if (error) { alert('上传失败：' + error.message); return; }
+    const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
+    userProfile.avatar_url = urlData.publicUrl;
+    await supabase.from('profiles').upsert({ id: currentUser.id, nickname: userProfile.nickname, avatar_url: userProfile.avatar_url });
+    alert('头像已更新');
+    loadUserProfile();
+}
+
+function logout() {
+    if (!confirm('确定断开连接？')) return;
+    supabase.auth.signOut();
+    localStorage.removeItem('ark_login_state');
+    location.reload();
+}
+
+async function loadMessages() {
+    const { data, error } = await supabase.from('messages').select('*').order('created_at', { ascending: true }).limit(100);
+    if (error) return;
+    const box = document.getElementById('chatMessages');
+    box.innerHTML = '';
+    data.forEach(msg => {
+        const isMe = currentUser && msg.user_id === currentUser.id;
+        box.innerHTML += `<div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+            <div class="text-xs text-[var(--ark-sub)] mb-1">${msg.user_id.slice(0,8)}</div>
+            <div class="px-3 py-2 max-w-[70%] rounded ${isMe ? 'bg-[var(--ark-highlight)]/20 text-[var(--ark-text)]' : 'bg-[var(--ark-border)] text-[var(--ark-text)]'}">${msg.content}</div>
+        </div>`;
+    });
+    box.scrollTop = box.scrollHeight;
+}
+
+async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const content = input.value.trim();
+    if (!content || !currentUser) return;
+    input.value = '';
+    await supabase.from('messages').insert([{ user_id: currentUser.id, content: content }]);
+}
+
+function setupRealtime() {
+    if (chatSubscription) supabase.removeSubscription(chatSubscription);
+    chatSubscription = supabase.channel('public:messages')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+            const msg = payload.new;
+            const box = document.getElementById('chatMessages');
+            const isMe = currentUser && msg.user_id === currentUser.id;
+            box.innerHTML += `<div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                <div class="text-xs text-[var(--ark-sub)] mb-1">${msg.user_id.slice(0,8)}</div>
+                <div class="px-3 py-2 max-w-[70%] rounded ${isMe ? 'bg-[var(--ark-highlight)]/20 text-[var(--ark-text)]' : 'bg-[var(--ark-border)] text-[var(--ark-text)]'}">${msg.content}</div>
+            </div>`;
+            box.scrollTop = box.scrollHeight;
+        })
+        .subscribe();
+    document.getElementById('chatStatus').textContent = '实时连接正常';
+}
+
+/* ============================================================
+   全局配置与原有逻辑
 ============================================================ */
 const CONFIG = { isAdmin: false };
 let passwordAccounts = [];
@@ -871,7 +1030,6 @@ const DB_VERSION = 2;
 const STORE_MUSIC = 'music_files';
 const STORE_DRAFTS = 'drafts';
 
-/* UI 音效（Web Audio API 合成） */
 let uiAudioCtx = null;
 let lastSoundTime = 0;
 function getUiCtx(){
@@ -934,7 +1092,6 @@ function setupGlobalSound(){
     }, true);
 }
 
-/* 每日一言 */
 const DAILY_QUOTES = [
     "人の夢は終わらない！", "俺の名は……", "这个世界，还存在许多未被观测的可能性。",
     "可能性の獣、その名は……", "幻想殺し、上条当麻。", "あんた、バカ？",
@@ -967,7 +1124,6 @@ function rollDailyQuote(){
     sfxSwitch();
 }
 
-/* 主题色 */
 const DEFAULT_THEME = { highlight:'#34c3ff', gold:'#ffcc44', panel:'#0d131f', border:'#1a2434', gradient:'linear-gradient(145deg,#060910 0%,#0a1120 50%,#0d1728 100%)' };
 const PRESET_THEMES = {
     'index-academy': { ...DEFAULT_THEME },
@@ -1022,7 +1178,6 @@ function saveCustomTheme(){
 function applyPresetTheme(k){ if (!PRESET_THEMES[k]) return; currentTheme = { ...PRESET_THEMES[k] }; applyThemeToDom(); sfxSwitch(); }
 function resetCustomTheme(){ currentTheme = { ...DEFAULT_THEME }; localStorage.removeItem('ark_custom_theme'); applyThemeToDom(); }
 
-/* 主题模式 */
 let currentThemeMode = 'dark';
 function loadThemeMode(){
     const m = localStorage.getItem('ark_theme_mode');
@@ -1054,7 +1209,6 @@ function updateThemeModeBtns(){
 }
 try { window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (currentThemeMode === 'auto') applyThemeMode(); }); } catch(e) {}
 
-/* 顶部日期时间 */
 const FESTIVALS = {
     '01-01': '元旦', '02-14': '情人节', '03-08': '妇女节', '03-12': '植树节',
     '04-01': '愚人节', '05-01': '劳动节', '05-04': '青年节', '06-01': '儿童节',
@@ -1076,7 +1230,6 @@ function updateTopClock(){
     if (fEl) { const name = FESTIVALS[`${m}-${d}`] || ''; fEl.textContent = name ? `· ${name}` : ''; }
 }
 
-/* IndexedDB */
 function openDB() {
     return new Promise((resolve, reject) => {
         const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -1151,7 +1304,6 @@ async function draftClearIDB(){
     } catch(e) {}
 }
 
-/* 登录背景 */
 function initLoginBackground(){
     const pbox = document.getElementById('lgParticles');
     if (pbox && !pbox.dataset.inited) {
@@ -1211,7 +1363,6 @@ function initLoginBackground(){
     requestAnimationFrame(draw);
 }
 
-/* 密码账户 */
 function loadPasswordAccounts(){
     try {
         const s = localStorage.getItem('ark_password_accounts');
@@ -1248,7 +1399,6 @@ function deletePasswordAccount(i){
     passwordAccounts.splice(i, 1); savePasswordAccounts(); renderPasswordManageList();
 }
 
-/* 阅读字体 */
 const FONT_MAP = {
     sans: "'Noto Sans SC', system-ui, sans-serif",
     serif: "'Noto Serif SC', 'Songti SC', serif",
@@ -1267,7 +1417,6 @@ function setReaderFont(key, silent){
     if (sel) sel.value = key;
 }
 
-/* 初始化 */
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         loadPasswordAccounts();
@@ -1305,8 +1454,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         card3dEnabled = localStorage.getItem('ark_card3d_enabled') !== '0';
         if (c3dT) c3dT.checked = card3dEnabled;
 
-        const s = localStorage.getItem('ark_login_state');
-        if (s) { try { const st = JSON.parse(s); CONFIG.isAdmin = st.isAdmin; enterMainAppDirect(); } catch(e) {} }
+        // 检查 Supabase 会话
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            currentUser = session.user;
+            enterMainAppDirect();
+        }
     } catch(e) {
         console.error('init err', e);
         passwordAccounts = [ { pwd:'admin123', role:'admin' }, { pwd:'guest123', role:'guest' } ];
@@ -1336,18 +1489,6 @@ function setupLoginInput(){
         if (e.key === 'Enter') { e.preventDefault(); verifyLogin(); }
     });
 }
-function verifyLogin(){
-    const inp = document.getElementById('passwordInput');
-    const err = document.getElementById('loginError');
-    if (err) err.classList.add('hidden');
-    if (!passwordAccounts || passwordAccounts.length === 0) {
-        passwordAccounts = [ { pwd:'admin123', role:'admin' }, { pwd:'guest123', role:'guest' } ];
-        savePasswordAccounts();
-    }
-    const u = passwordAccounts.find(x => x.pwd === inp.value);
-    if (u) { CONFIG.isAdmin = u.role === 'admin'; startLoginAnim(); }
-    else { if (err) err.classList.remove('hidden'); sfxWarn(); }
-}
 function startLoginAnim(){
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('loginLoading').classList.remove('hidden');
@@ -1356,8 +1497,13 @@ function startLoginAnim(){
     setTimeout(() => document.getElementById('step3').classList.remove('hidden'), 1900);
     setTimeout(enterMainApp, 2500);
 }
-function enterMainApp(){ saveLoginState(); showMainApp(); sfxSuccess(); }
-function enterMainAppDirect(){ document.getElementById('loginScreen').classList.add('hidden'); showMainApp(); }
+function enterMainApp(){ showMainApp(); sfxSuccess(); }
+
+async function enterMainAppDirect(){
+    document.getElementById('loginScreen').classList.add('hidden');
+    showMainApp();
+}
+
 function showMainApp(){
     try {
         document.getElementById('loginScreen').classList.add('hidden');
@@ -1372,15 +1518,18 @@ function showMainApp(){
         loadMusicFromDB().then(() => { restorePlaybackState(); updateStorageInfo(); });
         switchPage('home');
         setTimeout(() => { drawWaveform(); drawImmersiveWaveform(); }, 100);
+
+        if (currentUser) {
+            loadUserProfile();
+            loadMessages();
+            setupRealtime();
+        }
     } catch(e) {
         console.error('showMainApp err', e);
         document.getElementById('mainApp').classList.remove('hidden');
     }
 }
-function saveLoginState(){ localStorage.setItem('ark_login_state', JSON.stringify({ isAdmin: CONFIG.isAdmin, loginTime: Date.now() })); }
-function logout(){ if (!confirm('确定断开连接？')) return; localStorage.removeItem('ark_login_state'); location.reload(); }
 
-/* 页面切换 */
 let currentActivePage = null;
 let pageTransitioning = false;
 function switchPage(p){
@@ -1409,6 +1558,7 @@ function switchPage(p){
     if (p !== 'music') stopViz();
     if (p === 'detail') updateDetailTocAndProgress();
     if (p === 'editor' && !draftRestored) restoreDraft();
+    if (p === 'chat') { loadMessages(); }
     if (p === 'settings') updateStorageInfo();
     if (p === 'music') setTimeout(drawWaveform, 80);
 }
@@ -1417,7 +1567,6 @@ function toggleResponsiveSide(){
     if (side) side.classList.toggle('open');
 }
 
-/* 分类 */
 let categories = [];
 let currentCat = 'all';
 let homeViewMode = 'all';
@@ -1489,7 +1638,6 @@ function updateCatSelect(){
     sel.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 }
 
-/* 档案 */
 const defaultArticles = [
     { id: 1, title: '学园都市终端搭建记录', cat: 'tech', desc: '魔术终端界面搭建与功能记录',
       content: '<h1>学园都市终端搭建记录</h1><p>记录魔术终端系统搭建过程与技术细节。</p>', date: '2025-01-01' },
@@ -1804,7 +1952,6 @@ function clearEditorContent(){
     ed.focus();
 }
 
-/* 详情页 */
 function updateDetailTocAndProgress(){
     const content = document.getElementById('detailContent');
     const tocList = document.getElementById('tocList');
@@ -1867,7 +2014,6 @@ function enhanceCodeBlocks(){
     });
 }
 
-/* 富文本 */
 function execCmd(cmd, val){
     const ed = document.getElementById('richEditor'); if (!ed) return;
     ed.focus();
@@ -2090,7 +2236,6 @@ function toggleEditorFullscreen(){
     if (btn) btn.textContent = page.classList.contains('fixed') ? '⤢' : '⛶';
 }
 
-/* 图片尺寸面板 */
 let currentImg = null;
 function showImgSizePanel(img){
     currentImg = img;
@@ -2152,7 +2297,6 @@ function setImgAlign(a){
     updatePreview(); scheduleDraftSave();
 }
 
-/* 图片管理器 */
 function openImageManager(){
     const ed = document.getElementById('richEditor'); if (!ed) return;
     refreshImageManager();
@@ -2221,7 +2365,6 @@ function setupImageManagerEvents(){
 }
 window.insertImage = insertImage;
 
-/* 背景 / 数据管理 */
 function loadBg(){ try { const s = localStorage.getItem('ark_background'); if (s) applyBg(s); } catch(e) {} }
 function applyBg(b64){
     const bg = document.getElementById('globalBg'); if (!bg) return;
@@ -2315,7 +2458,6 @@ function factoryReset(){
     location.reload();
 }
 
-/* 音乐 */
 let vizCtx = null, vizAnalyser = null, vizSource = null, vizData = null, vizRAF = null;
 let currentWaveform = null;
 let fadeRAF = null;
@@ -2874,7 +3016,6 @@ function restorePlaybackState(){
         }
     } catch(e) {}
 }
-/* 歌曲编辑 */
 let editingTrackIdx = -1;
 function openTrackEdit(){
     if (currentIndex < 0 || !playlist[currentIndex]) { alert('请先选择一首曲目'); return; }
@@ -2967,7 +3108,6 @@ async function restoreTrackMeta(){
     renderPlaylist();
     closeTrackEdit();
 }
-/* 拖拽 */
 function setupDragDrop(){
     const c = document.getElementById('playlistContainer'); if (!c) return;
     let dragIdx = null;
